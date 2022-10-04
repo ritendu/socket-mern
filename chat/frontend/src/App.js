@@ -1,9 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
-
+import { Button, ButtonGroup } from '@chakra-ui/react'
 function App() {
   return (
-    <h2>Hello World</h2>
+  <div>
+    <Button colorScheme='blue'>Button</Button>
+  </div>
   );
 }
 
