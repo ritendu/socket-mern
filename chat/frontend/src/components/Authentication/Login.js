@@ -1,94 +1,93 @@
-import { FormControl, FormLabel, Input, InputGroup,InputRightElement, VStack,Button, useToast } from "@chakra-ui/react"
-import { useEffect, useState } from "react"
-const Login = ()=>{
-    const [show,setShow] = useState(false);
-    const toast = useToast();
-    const handleClick = () => setShow(!show);
+import { Button } from "@chakra-ui/button";
+import { FormControl, FormLabel } from "@chakra-ui/form-control";
+import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
+import { VStack } from "@chakra-ui/layout";
+import { useState } from "react";
+import axios from "axios";
+import { useToast } from "@chakra-ui/react";
+import {useNavigate} from "react-router-dom";
 
- const [name,setName] =  useState();
- const [email,setEmail]=useState();
- const [password,setPassword] = useState();
- const [confirmPassword,setConfirmpassword]=useState();
- const [pic, setPic] = useState();
- const [picLoading, setPicLoading] = useState(false);
+const Login = () => {
+  const [show, setShow] = useState(false);
+  const handleClick = () => setShow(!show);
+  const toast = useToast();
+  const navigate = useNavigate()
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const [loading, setLoading] = useState(false);
 
- const postDetails = (pics) => {
-    setPicLoading(true);
-    if (pics === undefined) {
+
+  const submitHandler = async () => {
+    setLoading(true);
+    if (!email || !password) {
       toast({
-        title: "Please Select an Image!",
+        title: "Please Fill all the Feilds",
         status: "warning",
         duration: 5000,
         isClosable: true,
         position: "bottom",
       });
+      setLoading(false);
       return;
     }
-    console.log(pics);
-    if (pics.type === "image/jpeg" || pics.type === "image/png") {
-      const data = new FormData();
-      data.append("file", pics);
-      data.append("upload_preset", "chat-app");
-      data.append("cloud_name", "piyushproj");
-      fetch("https://api.cloudinary.com/v1_1/piyushproj/image/upload", {
-        method: "post",
-        body: data,
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          setPic(data.url.toString());
-          console.log(data.url.toString());
-          setPicLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          setPicLoading(false);
-        });
-    } else {
+
+    // console.log(email, password);
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+
+      const { data } = await axios.post(
+        "http://localhost:5000/api/login",
+        { email, password },
+        config
+      );
+
+      // console.log(JSON.stringify(data));
       toast({
-        title: "Please Select an Image!",
-        status: "warning",
+        title: "Login Successful",
+        status: "success",
         duration: 5000,
         isClosable: true,
         position: "bottom",
       });
-      setPicLoading(false);
-      return;
+      localStorage.setItem("userInfo", JSON.stringify(data));
+      setLoading(false);
+      navigate("/chats");
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: 'Error',
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
     }
   };
 
-    return(
-        <VStack spacing="5px" color="black">
-            <FormControl id="first-name" isRequired>
-                <FormLabel>Name</FormLabel>
-                <Input placeholder="Enter your name" onChange={(e)=>setName(e.target.value)}/>
-            </FormControl>
-            <FormControl id="email" isRequired>
-                <FormLabel>Email</FormLabel>
-                <Input placeholder="Enter your Email" onChange={(e)=>setEmail(e.target.value)}/>
-            </FormControl>
-            <FormControl id="password" isRequired>
+  return (
+    <VStack spacing="10px">
+      <FormControl id="email" isRequired>
+        <FormLabel>Email Address</FormLabel>
+        <Input
+          value={email}
+          type="email"
+          placeholder="Enter Your Email Address"
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </FormControl>
+      <FormControl id="password" isRequired>
         <FormLabel>Password</FormLabel>
         <InputGroup size="md">
           <Input
-            type={show ? "text" : "password"}
-            placeholder="Enter Password"
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
-          />
-          <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleClick}>
-              {show ? "Hide" : "Show"}
-            </Button>
-          </InputRightElement>
-        </InputGroup>
-      </FormControl>
-      <FormControl id="password" isRequired>
-        <FormLabel>Confirm Password</FormLabel>
-        <InputGroup size="md">
-          <Input
             type={show ? "text" : "password"}
-            placeholder="Confirm password"
-            onChange={(e) => setConfirmpassword(e.target.value)}
+            placeholder="Enter password"
           />
           <InputRightElement width="4.5rem">
             <Button h="1.75rem" size="sm" onClick={handleClick}>
@@ -96,27 +95,29 @@ const Login = ()=>{
             </Button>
           </InputRightElement>
         </InputGroup>
-      </FormControl>
-      <FormControl id="pic">
-        <FormLabel>Upload your Picture</FormLabel>
-        <Input
-          type="file"
-          p={1.5}
-          accept="image/*"
-          onChange={(e) => postDetails(e.target.files[0])}
-        />
       </FormControl>
       <Button
         colorScheme="blue"
         width="100%"
         style={{ marginTop: 15 }}
-        // onClick={submitHandler}
-        isLoading={picLoading}
+        onClick={submitHandler}
+        isLoading={loading}
       >
-        Sign Up
+        Login
       </Button>
-        </VStack>
-    ) 
-}
+      <Button
+        variant="solid"
+        colorScheme="red"
+        width="100%"
+        onClick={() => {
+          setEmail("guest@example.com");
+          setPassword("123456");
+        }}
+      >
+        Get Guest User Credentials
+      </Button>
+    </VStack>
+  );
+};
 
-export default Login
+export default Login;

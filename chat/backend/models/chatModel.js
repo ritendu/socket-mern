@@ -8,7 +8,7 @@ users:[{
     type:mongoose.Schema.Types.ObjectId,
     ref:'User'
 }],
-latest:{type:mongoose.Schema.Types.ObjectId,
+latestMessage:{type:mongoose.Schema.Types.ObjectId,
 ref:'Message'},
 groupAdmin:{
     type:mongoose.Schema.Types.ObjectId,

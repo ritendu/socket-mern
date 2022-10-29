@@ -1,10 +1,13 @@
 import { FormControl, FormLabel, Input, InputGroup,InputRightElement, VStack,Button, useToast } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
-
+import {useNavigate} from "react-router-dom";
+import axios from 'axios';
 const Signup = ()=>{
     
     const [show,setShow] = useState(false);
     const toast = useToast();
+    const navigate = useNavigate()
+    
     const handleClick = () => setShow(!show);
 
  const [name,setName] =  useState();
@@ -13,6 +16,70 @@ const Signup = ()=>{
  const [confirmPassword,setConfirmpassword]=useState();
  const [pic, setPic] = useState();
  const [picLoading, setPicLoading] = useState(false);
+
+ const submitHandler = async () => {
+  setPicLoading(true);
+  if (!name || !email || !password || !confirmPassword) {
+    toast({
+      title: "Please Fill all the Feilds",
+      status: "warning",
+      duration: 5000,
+      isClosable: true,
+      position: "bottom",
+    });
+    setPicLoading(false);
+    return;
+  }
+  if (password !== confirmPassword) {
+    toast({
+      title: "Passwords Do Not Match",
+      status: "warning",
+      duration: 5000,
+      isClosable: true,
+      position: "bottom",
+    });
+    return;
+  }
+  console.log(name, email, password, pic);
+  try {
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
+    const { data } = await axios.post(
+      "http://localhost:5000/api/register",
+      {
+        name,
+        email,
+        password,
+        pic,
+      },
+      config
+    );
+    console.log(data);
+    toast({
+      title: "Registration Successful",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+      position: "bottom",
+    });
+    localStorage.setItem("userInfo", JSON.stringify(data));
+    setPicLoading(false);
+    navigate.push("/chats");
+  } catch (error) {
+    toast({
+      title: "Error Occured!",
+      description: error.response.data.message,
+      status: "error",
+      duration: 5000,
+      isClosable: true,
+      position: "bottom",
+    });
+    setPicLoading(false);
+  }
+};
 
  const postDetails = (pics) => {
     setPicLoading(true);
@@ -31,13 +98,14 @@ const Signup = ()=>{
       const data = new FormData();
       data.append("file", pics);
       data.append("upload_preset", "chat-app");
-      data.append("cloud_name", "piyushproj");
-      fetch("https://api.cloudinary.com/v1_1/piyushproj/image/upload", {
+      data.append("cloud_name", "dtal486iw");
+      fetch("https://api.cloudinary.com/v1_1/dtal486iw/image/upload", {
         method: "post",
         body: data,
       })
         .then((res) => res.json())
         .then((data) => {
+          console.log(data,"data")
           setPic(data.url.toString());
           console.log(data.url.toString());
           setPicLoading(false);
@@ -112,7 +180,7 @@ const Signup = ()=>{
         colorScheme="blue"
         width="100%"
         style={{ marginTop: 15 }}
-        // onClick={submitHandler}
+        onClick={submitHandler}
         isLoading={picLoading}
       >
         Sign Up
