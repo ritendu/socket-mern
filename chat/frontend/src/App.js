@@ -5,10 +5,12 @@ import Register from './pages/Register'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Protected from './components/Protected.route';
+import Navbar from "./components/Navbar"
 function App() {
 
 return (
   <>
+     <Navbar/>
   <Routes>
   <Route
 path="/"
