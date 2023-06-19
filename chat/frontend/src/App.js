@@ -6,6 +6,7 @@ import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Protected from './components/Protected.route';
 import Navbar from "./components/Navbar"
+import Footer from './components/Footer';
 function App() {
 
 return (
@@ -23,6 +24,7 @@ element={
     <Route path="/register" element={<div><Register/></div>}/>
     <Route path='/login'element={<div><Login/></div>}/>
     </Routes>
+    <Footer/>
   </>
 )
 
