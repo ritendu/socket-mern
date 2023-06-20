@@ -26,4 +26,27 @@ else{
 
 }
 
-module.exports = {register}
+const login = async (reqBody) => {
+    const user = await UserModel.findOne({
+      email: reqBody.email
+    });
+  
+    if (!user) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Email not registered');
+    } else {
+      const checkedPassword = await bcrypt.compare(
+        reqBody.password,
+        user.password
+      );
+      if (checkedPassword) {
+        return user;
+      } else {
+        throw new ApiError(
+          httpStatus.BAD_REQUEST,
+          'Invalid email or password'
+        );
+      }
+    }
+  };
+
+module.exports = {register,login}

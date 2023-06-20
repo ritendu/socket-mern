@@ -7,6 +7,8 @@ import Dashboard from './pages/Dashboard'
 import Protected from './components/Protected.route';
 import Navbar from "./components/Navbar"
 import Footer from './components/Footer';
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 function App() {
 
 return (
@@ -25,6 +27,7 @@ element={
     <Route path='/login'element={<div><Login/></div>}/>
     </Routes>
     <Footer/>
+    <ToastContainer />
   </>
 )
 

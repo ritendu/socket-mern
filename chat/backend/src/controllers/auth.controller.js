@@ -25,4 +25,25 @@ const register = catchAsync(async (req, res)=>{
 
 })
 
-module.exports = {register}
+const login = catchAsync(async (req, res)=>{
+  const user = await authService.login(req.body);
+  if (user) {
+    const tokens = await tokenService.generateAuthTokens(user);
+    return res.status(201).send({
+      serverResponse: {
+        code: 200,
+        message: 'User Sucessfully logged in.',
+      },
+      result: {
+        data: user,
+        tokens: {
+          accessToken: tokens.access.token,
+          refreshToken: tokens.refresh.token,
+        },
+      },
+    });
+  }
+})
+
+
+module.exports = {register,login}
