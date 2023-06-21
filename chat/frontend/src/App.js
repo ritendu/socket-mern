@@ -9,6 +9,7 @@ import Navbar from "./components/Navbar"
 import Footer from './components/Footer';
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import Logout from './pages/Logout';
 function App() {
 
 return (
@@ -25,6 +26,7 @@ element={
 />
     <Route path="/register" element={<div><Register/></div>}/>
     <Route path='/login'element={<div><Login/></div>}/>
+    <Route path='/logout'element={<div><Logout/></div>}/>
     </Routes>
     <Footer/>
     <ToastContainer />

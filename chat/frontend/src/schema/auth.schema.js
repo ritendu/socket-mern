@@ -13,7 +13,9 @@ export const signUpSchema = Yup.object({
 });
 
 export const loginSchema = Yup.object({
-  email: Yup.string().email().required("Please enter your email"),
+  email: Yup.string().email().required("Please enter your email").matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
+  "Invalid email address"
+  ),
   password: Yup.string().min(8).required("Please enter your password").matches(
     /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
     'Password must contain at least 8 characters, one letter, and one number'

@@ -53,9 +53,9 @@ export default function NavbarItem() {
         color="blue-gray"
         className="p-1 font-normal"
       >
-        <a href="#" className="flex items-center">
-          Docs
-        </a>
+        <Link to="/logout" className="flex items-center">
+          Logout
+        </Link>
       </Typography>
     </ul>
   );
