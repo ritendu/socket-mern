@@ -7,7 +7,7 @@ const socket = io.connect("http://localhost:4000");
 
 const Dashboard = ()=>{
     const {users,room} = useSelector(state=>state.user);
-    console.log(users,"users")
+    console.log(room,"users")
     const [message,setMessage] = useState('')
     const [dataMessage, setDataMessage] = useState('')
     const dispatch = useDispatch();
@@ -18,7 +18,7 @@ const Dashboard = ()=>{
        socket.on ('receive_message',data=>{
         setDataMessage(data)
        })
-    },[dataMessage,room])
+    },[socket])
     const handleChange = (e)=>{
         const name = e.target.name;
         const value = e.target.value

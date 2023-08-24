@@ -44,7 +44,16 @@ export const createRoom = createAsyncThunk('user/createRoom',async(user,thunkAPI
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data.msg);
   }
-})    
+})
+
+export const createMessage = createAsyncThunk('user/createMessage',async(user,thunkAPI)=>{
+  try {
+    const resp = await axios.post('http://localhost:4000/v1/create-message',user);
+    return resp.data
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response.data.msg);
+  }
+})
 
     const userSlice = createSlice({
         name:'user',
@@ -97,6 +106,18 @@ export const createRoom = createAsyncThunk('user/createRoom',async(user,thunkAPI
 
               })
               .addCase(createRoom.rejected, (state, { payload }) => {
+                // state.isLoading = false;
+                // toast.error(payload);
+              }).addCase(createMessage.pending, (state) => {
+                state.isLoading = true;
+              })
+              .addCase(createMessage.fulfilled, (state, { payload }) => {
+                state.isLoading = false;
+                state.room = payload.data;
+              // localStorage.setItem('user',payload.data);
+
+              })
+              .addCase(createMessage.rejected, (state, { payload }) => {
                 // state.isLoading = false;
                 // toast.error(payload);
               })

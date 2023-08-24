@@ -1,5 +1,6 @@
 const UserModel = require('../models/user.model')
 const ChatRoomModel = require('../models/chat.model')
+const MessageModel = require('../models/message.model')
 
 const createUser = async(req,res)=>{
     const createuser = await UserModel.create({
@@ -49,4 +50,16 @@ const createRoom = async(req,res)=>{
  
 }
 
-module.exports ={createUser,loginUser,getUsers,createRoom}
+const createMessage = async(req,res)=>{
+    const findChatRoom = await ChatRoomModel.findOne({chatRoomId:req.body.roomId});
+    if(findChatRoom){
+        let createMessage = await MessageModel({
+            chatRoomId:findChatRoom._id,
+            messageText:req.body.message
+        })
+        createMessage = await createMessage.save();
+        res.send({data:createMessage})
+    }
+}
+
+module.exports ={createUser,loginUser,getUsers,createRoom,createMessage}
