@@ -47,8 +47,10 @@ export const createRoom = createAsyncThunk('user/createRoom',async(user,thunkAPI
 })
 
 export const createMessage = createAsyncThunk('user/createMessage',async(user,thunkAPI)=>{
+  console.log(user,'Hello World....')
   try {
     const resp = await axios.post('http://localhost:4000/v1/create-message',user);
+    console.log(resp.data,"data>>>>>>>")
     return resp.data
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data.msg);
@@ -113,6 +115,7 @@ export const createMessage = createAsyncThunk('user/createMessage',async(user,th
               })
               .addCase(createMessage.fulfilled, (state, { payload }) => {
                 state.isLoading = false;
+                console.log(payload,"payload")
                 state.room = payload.data;
               // localStorage.setItem('user',payload.data);
 

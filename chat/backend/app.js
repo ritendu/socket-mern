@@ -25,13 +25,11 @@ app.use('/v1',appRoutes)
 io.on("connection", (socket) => {
     console.log(`User Connected: ${socket.id}`);
   socket.on('create-room',(data)=>{
-    console.log(data,"data")
     socket.join(data.roomId)
   })
 
  socket.on("send_message", (data) => {
-  console.log(data,"?????????????")
-      socket.to(data.roomId).emit("receive_message", data);
+  socket.to(data.roomId).emit("receive_message", data);
     });
     // socket.on("join_room", (data) => {
     //   socket.join(data);

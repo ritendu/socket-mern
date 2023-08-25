@@ -51,9 +51,11 @@ const createRoom = async(req,res)=>{
 }
 
 const createMessage = async(req,res)=>{
-    const findChatRoom = await ChatRoomModel.findOne({chatRoomId:req.body.roomId});
+    const findChatRoom = await ChatRoomModel.findOne({_id:req.body.roomId});
+    console.log(findChatRoom,"????????")
     if(findChatRoom){
-        let createMessage = await MessageModel({
+        console.log('Hello World')
+        let createMessage = new MessageModel({
             chatRoomId:findChatRoom._id,
             messageText:req.body.message
         })
