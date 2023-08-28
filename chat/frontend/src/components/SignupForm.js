@@ -10,8 +10,8 @@ import { Link } from "react-router-dom";
 import {useFormik} from 'formik' 
 import {signUpSchema} from '../schema/auth.schema'
 import { useNavigate } from "react-router-dom"
-import { register } from "../features/user/userSlice";
-import { registerUser } from "../features/user/userSlice";
+import { register } from "../features/user/authSlice";
+import { registerUser } from "../features/user/authSlice";
 
 // import Toast from "./Toast";
 const SignupForm = ()=>{

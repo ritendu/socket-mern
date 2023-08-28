@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import Avatar from '../components/Avatar';
 import { data } from "../data";
+import { useSelector } from "react-redux";
 const Dashboard = ()=>{
+  const state = useSelector(state=>console.log(state,"state"))
   const [name,setName] = useState('')
     useEffect(()=>{
       let user = localStorage.getItem('user');
