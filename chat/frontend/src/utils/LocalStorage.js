@@ -4,7 +4,8 @@ export const LocalStorage ={
         localStorage.setItem("token", JSON.stringify(user.tokens));
     },
 getItem:()=>{
-    localStorage.getItem("token");
+   const token = JSON.parse(localStorage.getItem("token"));
+   return token
 }
 
 }
