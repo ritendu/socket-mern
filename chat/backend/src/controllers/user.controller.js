@@ -52,4 +52,9 @@ if(getRooms){
 
 })
 
-module.exports = {getUsers,createChatRoom,getRooms}
+const createMessage = catchAsync(async(req,res)=>{
+const createMessage = await userService.createMessage(req.user,req.body);
+
+})
+
+module.exports = {getUsers,createChatRoom,getRooms,createMessage}

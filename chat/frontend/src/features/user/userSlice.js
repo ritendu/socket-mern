@@ -92,6 +92,8 @@ try {
                 state.isLoading = true;
               })
               .addCase(getRooms.fulfilled, (state, { payload }) => {
+                console.log(JSON.stringify(payload),"getRooms")
+                // console.log(payload,"getRooms")
                 state.isLoading =false
       
                 state.rooms = payload.result.data;

@@ -21,14 +21,15 @@ const Dashboard = ()=>{
       user = JSON.parse(user);
       setName(user.fullName)
 dispatch(getUsers())
-dispatch(getRooms())
-    },[])
-
-console.log(rooms,"rooms")
+// dispatch(getRooms())
+    },[rooms])
+useEffect(()=>{
+  dispatch(getRooms())
+},[])
     const handleChange = (item)=>{
 (async()=>{
 await dispatch(createRoom({user:item}))
-// await dispatch(getRooms())
+await dispatch(getRooms())
 // await dispatch(getUsers())
 })()
     }
@@ -65,15 +66,14 @@ await dispatch(createRoom({user:item}))
         
       {/* end search compt  */}
         {/* user list */}
-        
-        {data.map((data)=>{
+        {rooms.length!==0?rooms.map((item)=>{
           return (
             <div 
             className="flex flex-row py-4 px-2 justify-center items-center border-b-2 cursor-pointer"
-            key={data.id}
+            key={item.id}
           >
             <div className="w-1/4">
-            <Avatar name={data.name}/>
+            <Avatarr name={item.chatRoomName}/>
               {/* <img
                 src="https://source.unsplash.com/_7LbC5J-jw4/600x600"
                 className="object-cover h-12 w-12 rounded-full"
@@ -81,12 +81,13 @@ await dispatch(createRoom({user:item}))
               /> */}
             </div>
             <div className="w-full">
-              <div className="text-lg font-semibold">{data.name}</div>
+              <div className="text-lg font-semibold">{item.chatRoomName}</div>
               <span className="text-gray-500">Pick me at 9:00 Am</span>
             </div>
           </div>
           )
-        })}
+        }):<div>No Chat Rooms</div>}
+   
 
         {/* end user list */}
       </div>

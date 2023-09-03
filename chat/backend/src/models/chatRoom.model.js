@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 
 const chatRoomSchema = mongoose.Schema(
   {
-    chatRoomName:{type:String,},
     members: [
       {
         type: mongoose.SchemaTypes.ObjectId,

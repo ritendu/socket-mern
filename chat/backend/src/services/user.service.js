@@ -43,7 +43,6 @@ const createChatRoom  = async(reqUser,reqBody)=>{
     }
     else{
         const createRoom = await ChatModel.create({
-            chatRoomName:reqBody.user.fullName,
             members:[reqUser._id,reqBody.user._id]
         })
         if(createRoom){
@@ -54,9 +53,13 @@ const createChatRoom  = async(reqUser,reqBody)=>{
 }
 
 const getRooms = async(reqUser)=>{
-    const getRooms = await ChatModel.find({members:{ $elemMatch: { $eq:reqUser._id } }});
+    const getRooms = await ChatModel.find({members:{ $elemMatch: { $eq:reqUser._id } }}).populate('members');
     return getRooms;
 }
 
 
-module.exports = {getUsers,createChatRoom,getRooms}
+const createMessage = async(reqUser,reqBody)=>{
+
+}
+
+module.exports = {getUsers,createChatRoom,getRooms,createMessage}
