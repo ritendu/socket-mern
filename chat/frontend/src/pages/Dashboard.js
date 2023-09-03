@@ -15,15 +15,18 @@ const Dashboard = ()=>{
   const {users,rooms} = useSelector(state=>state.getUser);
 
   const dispatch = useDispatch();
-  const [name,setName] = useState('')
+  const [name,setName] = useState('');
+  const [user,setUser]= useState(null);
     useEffect(()=>{
-      let user = localStorage.getItem('user');
-      user = JSON.parse(user);
-      setName(user.fullName)
+    
 dispatch(getUsers())
 // dispatch(getRooms())
     },[rooms])
 useEffect(()=>{
+  let user = localStorage.getItem('user');
+  user = JSON.parse(user);
+  setName(user.fullName)
+  setUser(user)
   dispatch(getRooms())
 },[])
     const handleChange = (item)=>{
@@ -33,6 +36,7 @@ await dispatch(getRooms())
 // await dispatch(getUsers())
 })()
     }
+    console.log(user,"user")
     return (
         <div>
      {/* This is an example component */}
@@ -66,25 +70,26 @@ await dispatch(getRooms())
         
       {/* end search compt  */}
         {/* user list */}
-        {rooms.length!==0?rooms.map((item)=>{
+        
+        {rooms.length!==0 && user!==null ?rooms.map((item,index)=>{
+          const {members} = item
+        const data = members.filter(item=>item._id!==user._id)
           return (
+            
             <div 
             className="flex flex-row py-4 px-2 justify-center items-center border-b-2 cursor-pointer"
-            key={item.id}
+            key={index}
           >
             <div className="w-1/4">
-            <Avatarr name={item.chatRoomName}/>
-              {/* <img
-                src="https://source.unsplash.com/_7LbC5J-jw4/600x600"
-                className="object-cover h-12 w-12 rounded-full"
-                alt=""
-              /> */}
+            <Avatarr name={data[0].fullName}/>
             </div>
             <div className="w-full">
-              <div className="text-lg font-semibold">{item.chatRoomName}</div>
+              <div className="text-lg font-semibold">{data[0].fullName}</div>
               <span className="text-gray-500">Pick me at 9:00 Am</span>
             </div>
           </div>
+            
+          
           )
         }):<div>No Chat Rooms</div>}
    
