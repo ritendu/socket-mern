@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Avatarr from '../components/Avatar';
 import { data } from "../data";
 import { useDispatch, useSelector } from "react-redux";
-import { getUsers,createRoom } from "../features/user/userSlice";
+import { getUsers,createRoom,getRooms } from "../features/user/userSlice";
 import {
   List,
   ListItem,
@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@material-tailwind/react";
 const Dashboard = ()=>{
-  const {users} = useSelector(state=>state.getUser);
+  const {users,rooms} = useSelector(state=>state.getUser);
 
   const dispatch = useDispatch();
   const [name,setName] = useState('')
@@ -21,11 +21,15 @@ const Dashboard = ()=>{
       user = JSON.parse(user);
       setName(user.fullName)
 dispatch(getUsers())
+dispatch(getRooms())
     },[])
 
+console.log(rooms,"rooms")
     const handleChange = (item)=>{
 (async()=>{
 await dispatch(createRoom({user:item}))
+// await dispatch(getRooms())
+// await dispatch(getUsers())
 })()
     }
     return (
@@ -56,30 +60,32 @@ await dispatch(createRoom({user:item}))
             placeholder="search chatting"
             className="py-2 px-2 border-2 border-gray-200 rounded-2xl w-full"
           />
+          
         </div>
+        
       {/* end search compt  */}
         {/* user list */}
         
         {data.map((data)=>{
-          // return (
-          //   <div 
-          //   className="flex flex-row py-4 px-2 justify-center items-center border-b-2 cursor-pointer"
-          //   key={data.id}
-          // >
-          //   <div className="w-1/4">
-          //   <Avatar name={data.name}/>
-          //     {/* <img
-          //       src="https://source.unsplash.com/_7LbC5J-jw4/600x600"
-          //       className="object-cover h-12 w-12 rounded-full"
-          //       alt=""
-          //     /> */}
-          //   </div>
-          //   <div className="w-full">
-          //     <div className="text-lg font-semibold">{data.name}</div>
-          //     <span className="text-gray-500">Pick me at 9:00 Am</span>
-          //   </div>
-          // </div>
-          // )
+          return (
+            <div 
+            className="flex flex-row py-4 px-2 justify-center items-center border-b-2 cursor-pointer"
+            key={data.id}
+          >
+            <div className="w-1/4">
+            <Avatar name={data.name}/>
+              {/* <img
+                src="https://source.unsplash.com/_7LbC5J-jw4/600x600"
+                className="object-cover h-12 w-12 rounded-full"
+                alt=""
+              /> */}
+            </div>
+            <div className="w-full">
+              <div className="text-lg font-semibold">{data.name}</div>
+              <span className="text-gray-500">Pick me at 9:00 Am</span>
+            </div>
+          </div>
+          )
         })}
 
         {/* end user list */}

@@ -7,11 +7,12 @@ import { useNavigate } from "react-router-dom";
 const initialState = {
     isLoading:false,
     users:[],
-    room:{}
+    rooms:[]
 }
 
 
 export const getUsers = createAsyncThunk('user/getUsers',async(user,thunkAPI)=>{
+  console.log('Hello World..')
 const getToken = LocalStorage.getItem();
 
     try {
@@ -41,6 +42,23 @@ export const createRoom =  createAsyncThunk('/users/create/room',async(user,thun
   }
 })
 
+
+export const getRooms = createAsyncThunk('/users/get/rooms',async(user,thunkAPI)=>{
+const getToken =  LocalStorage.getItem();
+try {
+  const resp = await customFetch.get('/users/get/rooms',
+  {
+      headers: { Authorization: `Bearer ${getToken.accessToken}` }
+  },)
+  return resp.data;
+} catch (error) {
+  toast.error(error.response.data.message)
+    return thunkAPI.rejectWithValue(error.response.data.msg);
+}
+
+
+})
+
     const getUsersSlice = createSlice({
         name:'user',
         initialState,
@@ -64,11 +82,21 @@ export const createRoom =  createAsyncThunk('/users/create/room',async(user,thun
                 state.isLoading = true;
               })
               .addCase(createRoom.fulfilled, (state, { payload }) => {
-                console.log(payload,"payload")
                 state.isLoading =false
-                state.room = payload.result.data;
+           
               })
               .addCase(createRoom.rejected, (state, { payload }) => {
+                state.isLoading = false;
+                toast.error(payload);
+              }).addCase(getRooms.pending, (state) => {
+                state.isLoading = true;
+              })
+              .addCase(getRooms.fulfilled, (state, { payload }) => {
+                state.isLoading =false
+      
+                state.rooms = payload.result.data;
+              })
+              .addCase(getRooms.rejected, (state, { payload }) => {
                 state.isLoading = false;
                 toast.error(payload);
               })

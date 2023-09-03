@@ -35,4 +35,21 @@ if(createRoom){
 
 })
 
-module.exports = {getUsers,createChatRoom}
+const getRooms = catchAsync(async (req, res)=>{
+const getRooms = await userService.getRooms(req.user);
+if(getRooms){
+  return res.status(200).send({
+    serverResponse: {
+      code: 200,
+      message: 'Get Chat Rooms',
+    },
+    result: {
+      data: getRooms,
+    
+    },
+  });
+}
+
+})
+
+module.exports = {getUsers,createChatRoom,getRooms}

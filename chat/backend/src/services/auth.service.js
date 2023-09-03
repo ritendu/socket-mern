@@ -30,7 +30,6 @@ const login = async (reqBody) => {
     const user = await UserModel.findOne({
       email: reqBody.email
     });
-  
     if (!user) {
       throw new ApiError(httpStatus.BAD_REQUEST, 'Email not registered');
     } else {
@@ -38,6 +37,7 @@ const login = async (reqBody) => {
         reqBody.password,
         user.password
       );
+      console.log(checkedPassword,"checkedPassword")
       if (checkedPassword) {
         return user;
       } else {

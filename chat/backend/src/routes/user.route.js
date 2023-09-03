@@ -4,6 +4,7 @@ const userController = require('../controllers/user.controller')
 const auth = require("../middlewares/auth");
 
 router.get('/get/users',auth(),userController.getUsers);
-router.post('/create/room',auth(),userController.createChatRoom)
+router.post('/create/room',auth(),userController.createChatRoom);
+router.get('/get/rooms',auth(),userController.getRooms)
 
 module.exports = router
