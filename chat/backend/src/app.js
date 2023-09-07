@@ -79,7 +79,10 @@ io.on("connection", (socket) => {
   console.log(`User Connected: ${socket.id}`);
 socket.on('join-room',(data)=>{
   socket.join(data.roomId);
-  socket.emit('data',{data:'Hello World'})
+})
+socket.on('message',(data)=>{
+  console.log(data,"data>>>>>.")
+  socket.to(data.chatRoomId).emit("receive_message", data);
 })
   // socket.on("join_room", (data) => {
   //   socket.join(data);

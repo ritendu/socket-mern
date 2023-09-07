@@ -20,6 +20,9 @@ const Dashboard = ()=>{
   const dispatch = useDispatch();
   const [name,setName] = useState('');
   const [user,setUser]= useState(null);
+  const [text,setMessage] = useState('');
+  const [receiveMessage,setReceiveMessage] =useState('')
+  const [roomId,setRoomId] = useState('');
     useEffect(()=>{
     
 dispatch(getUsers())
@@ -31,16 +34,22 @@ useEffect(()=>{
   setName(user.fullName)
   setUser(user)
   dispatch(getRooms())
-},[])
+},[message])
 
 useEffect(()=>{
   socket.on('data',(data)=>{
     console.log(data,"dtadad")
   })
+  socket.on('receive_message',(data)=>{
+    console.log(data,";;;;;;;;;;;")
+    setReceiveMessage(data.messageText)
+  })
+
 },[socket])
 console.log(message,"message")
 
 const joinRoom = (roomId)=>{
+  setRoomId(roomId);
 (async()=>{
 await dispatch(getMessage(roomId))
 })()
@@ -53,6 +62,19 @@ await dispatch(getRooms())
 // await dispatch(getUsers())
 })()
     }
+
+const handleChangeMessage = (e)=>{
+const name = e.target.name;
+
+const value = e.target.value;
+setMessage(value);
+}    
+const submitMessage = (e)=>{
+e.preventDefault();
+console.log(text,"text");
+socket.emit('message',{messageText:text,chatRoomId:roomId})
+setMessage('')
+}
 
     return (
         <div>
@@ -116,76 +138,29 @@ await dispatch(getRooms())
       {/* end chat list */}
       {/* message */}  
       <div className="w-full px-5 flex flex-col justify-between">
-        <div>Hello</div>
         <div className="flex flex-col mt-5">
-          <div className="flex justify-end mb-4">
-            <div
-              className="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white"
-            >
-              Welcome to group everyone !
-            </div>
-            <img
-              src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
-              className="object-cover h-8 w-8 rounded-full"
-              alt=""
-            />
+        {message.length!==0 ? message.map((item)=>{
+return (
+  <div className="flex justify-end mb-4">
+    {item.messageText}
+    {receiveMessage}
           </div>
-          <div className="flex justify-start mb-4">
-            <img
-              src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
-              className="object-cover h-8 w-8 rounded-full"
-              alt=""
-            />
-            <div
-              className="ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white"
-            >
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat
-              at praesentium, aut ullam delectus odio error sit rem. Architecto
-              nulla doloribus laborum illo rem enim dolor odio saepe,
-              consequatur quas?
-            </div>
-          </div>
-          <div className="flex justify-end mb-4">
-            <div>
-              <div
-                className="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white"
-              >
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                Magnam, repudiandae.
-              </div>
-
-              <div
-                className="mt-4 mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white"
-              >
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Debitis, reiciendis!
-              </div>
-            </div>
-            <img
-              src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
-              className="object-cover h-8 w-8 rounded-full"
-              alt=""
-            />
-          </div>
-          <div className="flex justify-start mb-4">
-            <img
-              src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
-              className="object-cover h-8 w-8 rounded-full"
-              alt=""
-            />
-            <div
-              className="ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white"
-            >
-              happy holiday guys!
-            </div>
-          </div>
+)
+}):'No messages found'}
+          
         </div>
         <div className="py-5">
+          <form onSubmit={submitMessage}>
           <input
             className="w-full bg-gray-300 py-5 px-3 rounded-xl"
             type="text"
+            name="message"
+           value={text} 
             placeholder="type your message here..."
+            onChange={handleChangeMessage}
           />
+          </form>
+
         </div>
       </div>
       {/* end message  */}
