@@ -14,6 +14,8 @@ const DBconnect = require("./configs/db.config");
 const config = require("./configs/configs");
 const routes = require("./routes/index");
 const ApiError = require("./utils/ApiError");
+const http = require("http");
+const { Server } = require("socket.io");
 
 const app = express();
 
@@ -23,6 +25,14 @@ DBconnect.DBconnect();
 // enable cors
 app.use(cors());
 app.options("*", cors());
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+});
 
 if (config.env !== "test") {
   app.use(morgan.successHandler);
@@ -64,7 +74,24 @@ app.use((req, res, next) => {
 app.use(errorConverter);
 app.use(errorHandler);
 const PORT = process.env.PORT
-app.listen(PORT, () => {
+
+io.on("connection", (socket) => {
+  console.log(`User Connected: ${socket.id}`);
+socket.on('join-room',(data)=>{
+  socket.join(data.roomId);
+  socket.emit('data',{data:'Hello World'})
+})
+  // socket.on("join_room", (data) => {
+  //   socket.join(data);
+  // });
+
+  // socket.on("send_message", (data) => {
+  //   socket.to(data.room).emit("receive_message", data);
+  // });
+});
+
+
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 

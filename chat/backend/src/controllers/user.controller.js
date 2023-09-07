@@ -1,7 +1,6 @@
 const catchAsync = require("../utils/catchAsync");
 const UserModel = require('../models/user.model')
 const userService = require('../services/user.service')
-
 const getUsers = catchAsync(async (req, res)=>{
 const getUsers = await userService.getUsers(req.user);
 if(getUsers){
@@ -54,7 +53,38 @@ if(getRooms){
 
 const createMessage = catchAsync(async(req,res)=>{
 const createMessage = await userService.createMessage(req.user,req.body);
+if(createMessage){
+  return res.status(200).send({
+    serverResponse: {
+      code: 200,
+      message: 'Get Chat Rooms',
+    },
+    result: {
+      data: createMessage,
+    
+    },
+  });
+}
 
 })
 
-module.exports = {getUsers,createChatRoom,getRooms,createMessage}
+const getChatRoomMessage = catchAsync(async(req,res)=>{
+  console.log(req.user,"reqUser");
+  console.log(req.body,"reqBody")
+const getChatRoom = await userService.getMessage(req.user,req.params);
+if(getChatRoom){
+  return res.status(200).send({
+    serverResponse: {
+      code: 200,
+      message: 'Get Chat Rooms',
+    },
+    result: {
+      data: getChatRoom,
+    
+    },
+  });
+}
+
+})
+
+module.exports = {getUsers,createChatRoom,getRooms,createMessage,getChatRoomMessage}

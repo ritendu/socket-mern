@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import Avatarr from '../components/Avatar';
 import { data } from "../data";
 import { useDispatch, useSelector } from "react-redux";
-import { getUsers,createRoom,getRooms } from "../features/user/userSlice";
+import { getUsers,createRoom,getRooms,getMessage } from "../features/user/userSlice";
+import io from "socket.io-client";
+
 import {
   List,
   ListItem,
@@ -12,7 +14,8 @@ import {
   Typography,
 } from "@material-tailwind/react";
 const Dashboard = ()=>{
-  const {users,rooms} = useSelector(state=>state.getUser);
+  const socket = io.connect("http://localhost:4000");
+  const {users,rooms,message} = useSelector(state=>state.getUser);
 
   const dispatch = useDispatch();
   const [name,setName] = useState('');
@@ -29,6 +32,20 @@ useEffect(()=>{
   setUser(user)
   dispatch(getRooms())
 },[])
+
+useEffect(()=>{
+  socket.on('data',(data)=>{
+    console.log(data,"dtadad")
+  })
+},[socket])
+console.log(message,"message")
+
+const joinRoom = (roomId)=>{
+(async()=>{
+await dispatch(getMessage(roomId))
+})()
+socket.emit('join-room',{roomId:roomId})
+}
     const handleChange = (item)=>{
 (async()=>{
 await dispatch(createRoom({user:item}))
@@ -36,7 +53,7 @@ await dispatch(getRooms())
 // await dispatch(getUsers())
 })()
     }
-    console.log(user,"user")
+
     return (
         <div>
      {/* This is an example component */}
@@ -78,7 +95,7 @@ await dispatch(getRooms())
             
             <div 
             className="flex flex-row py-4 px-2 justify-center items-center border-b-2 cursor-pointer"
-            key={index}
+            key={index} onClick={()=>joinRoom(item._id)}
           >
             <div className="w-1/4">
             <Avatarr name={data[0].fullName}/>
